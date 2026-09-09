@@ -97,3 +97,5 @@ This makes the combined training self-contained and portable.
 - **Estimated Time**: 90-120 minutes
 - **Topics Covered**: 6 major cybersecurity domains
 - **Interactive Elements**: 20+ simulations and exercises
+
+# phshing-smishing
