@@ -1,0 +1,3519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRC Engineering: Social Engineering Defense Training</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --primary-purple:#7B2CBF; --light-purple:#E0B0FF; --dark-purple:#4A1A6B;
+      --primary-teal:#06A77D; --light-teal:#B2F5E8; --dark-teal:#045F4A;
+      --off-black:#17191E; --white:#FFFFFF; --success-green:#4CAF50;
+      --warning-amber:#FF9800; --error-red:#F44336; --neutral-gray:#9E9E9E;
+      --light-gray:#F5F5F5; --medium-gray:#E0E0E0; --primary-gradient: linear-gradient(135deg, #7B2CBF 0%, #06A77D 100%);
+    }
+    
+    body { 
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+      background: #0a0e27;
+      color:var(--off-black); 
+      min-height:100vh; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      padding:20px; 
+      line-height:1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Static gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(29,99,237,0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(29,99,237,0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 20%, rgba(0,85,204,0.1) 0%, transparent 50%);
+      z-index: -1;
+    }
+    
+    .module-container { 
+      background:var(--white); 
+      border-radius:16px; 
+      box-shadow:0 10px 40px rgba(0,8,77,.25); 
+      max-width:1100px; 
+      width:100%; 
+      overflow:hidden;
+    }
+    
+    .grc-header { 
+      background:var(--primary-gradient); 
+      padding:20px 32px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:space-between; 
+      color:var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .grc-logo { 
+      display:flex; 
+      align-items:center; 
+      gap:16px; 
+      font-weight:700; 
+      font-size:20px;
+      z-index: 2;
+    }
+    
+    .grc-owl { 
+      width:48px; 
+      height:48px; 
+      background:var(--white); 
+      border-radius:12px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      font-size:28px;
+      animation: bounce 2s ease-in-out infinite;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .grc-owl:hover {
+      transform: rotate(10deg) scale(1.1);
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    .progress-bar { 
+      height:6px; 
+      background:var(--medium-gray); 
+      position:relative; 
+      overflow:hidden; 
+    }
+    
+    .progress-fill { 
+      height:100%; 
+      background:linear-gradient(90deg, var(--primary-purple), #0055CC); 
+      width:0%; 
+      transition:width .5s ease;
+      box-shadow: 0 0 20px rgba(29,99,237,0.5);
+    }
+    
+    .slide { 
+      padding:56px 48px; 
+      min-height:580px; 
+      display:none; 
+      animation:slideIn .4s ease;
+      position: relative;
+    }
+    
+    .slide.active { display:block; }
+    
+    @keyframes slideIn { 
+      from{ opacity:0; transform:translateX(30px); } 
+      to{ opacity:1; transform:translateX(0); } 
+    }
+    
+    h1 { 
+      color:var(--dark-purple); 
+      font-size:2.5rem; 
+      font-weight:800; 
+      margin-bottom:28px; 
+      text-align:center; 
+      line-height:1.2;
+      background: linear-gradient(135deg, var(--dark-purple), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    h2 { 
+      color:var(--dark-purple); 
+      font-size:2rem; 
+      font-weight:700; 
+      margin-bottom:24px;
+    }
+    
+    p { 
+      font-size:1.125rem; 
+      margin-bottom:20px; 
+      color:var(--off-black); 
+    }
+    
+    /* Educational content styles */
+    .info-grid { 
+      display:grid; 
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap:20px; 
+      margin: 32px 0;
+    }
+    
+    .info-card { 
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      padding:24px; 
+      border-radius:12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(29,99,237,0.1);
+    }
+    
+    .info-card:hover {
+      box-shadow: 0 6px 20px rgba(29,99,237,0.15);
+      border-color: rgba(29,99,237,0.3);
+    }
+    
+    .info-card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    
+    .info-card h3 {
+      color: var(--primary-purple);
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .info-card p {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+      line-height: 1.5;
+    }
+    
+    /* Welcome slide specific card styling */
+    .welcome-card {
+      background: linear-gradient(135deg, #fff 0%, var(--light-purple) 100%);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(29,99,237,0.12);
+      border: 2px solid rgba(29,99,237,0.15);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .welcome-card:hover {
+      box-shadow: 0 12px 32px rgba(29,99,237,0.2);
+      border-color: rgba(29,99,237,0.3);
+    }
+    
+    .welcome-card .info-card-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .welcome-card h3 {
+      color: var(--dark-purple);
+      font-size: 20px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    
+    .welcome-card p {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+    
+    .visual-demo { 
+      background: linear-gradient(135deg, var(--light-purple) 0%, rgba(29,99,237,0.05) 100%);
+      padding:32px; 
+      border-radius:12px; 
+      margin:32px 0; 
+      border:2px solid rgba(29,99,237,.15);
+      box-shadow: 0 4px 12px rgba(29,99,237,0.1);
+    }
+    
+    /* Enhanced hover effects for buttons - matching Module 2 and 3 */
+    .email-actions button:hover,
+    .sms-actions button:hover,
+    .decision-grid button:hover,
+    .btn:hover {
+      box-shadow: 0 4px 12px rgba(29,99,237,0.2);
+      transform: translateY(-2px);
+    }
+    
+    /* Keep the decision-grid for call simulator layout */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    
+    /* Interactive email simulator - modern Outlook/Gmail inspired */
+    .email-shell {
+      background: linear-gradient(180deg, #f3f6fb 0%, #eef2f7 100%);
+      border: 1px solid #dbe3ee;
+      border-radius: 18px;
+      overflow: hidden;
+      margin: 24px 0;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      position: relative;
+    }
+
+    .email-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef3f8 100%);
+      border-bottom: 1px solid #dbe3ee;
+      padding: 14px 18px;
+    }
+
+    .mail-app-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .mail-dot.red { background: #ff5f57; }
+    .mail-dot.yellow { background: #ffbd2e; }
+    .mail-dot.green { background: #28c840; }
+
+    .email-score-pill {
+      background: rgba(123, 44, 191, 0.08);
+      border: 1px solid rgba(123, 44, 191, 0.18);
+      color: var(--primary-purple);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .email-simulator {
+      background: #ffffff;
+      border-radius: 0 0 18px 18px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    
+    .email-simulator:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    
+    .email-header {
+      background: #fff;
+      padding: 18px 22px;
+      border-bottom: 1px solid #edf0f4;
+    }
+    
+    .email-field {
+      display: flex;
+      align-items: flex-start;
+      margin: 10px 0;
+      font-size: 14px;
+      gap: 12px;
+    }
+    
+    .email-label {
+      font-weight: 700;
+      color: #6c757d;
+      width: 62px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .email-value {
+      flex: 1;
+      color: #1f2937;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    
+    .email-content {
+      padding: 26px 24px 20px;
+      background: #fff;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #1f2937;
+    }
+
+    .email-content p {
+      margin-bottom: 16px;
+    }
+
+    .email-body-box {
+      background: #f8fafc;
+      border: 1px solid #e5edf5;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 18px 0;
+    }
+
+    .email-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 16px 18px 18px;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef3f8 100%);
+      border-top: 1px solid #e5edf5;
+      flex-wrap: wrap;
+    }
+
+    .email-outcome {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 24px;
+    }
+
+    .email-outcome.show {
+      display: flex;
+    }
+
+    .email-outcome-card {
+      width: min(560px, 100%);
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 26px 60px rgba(15, 23, 42, 0.25);
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      animation: slideInUp 0.25s ease;
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .email-outcome-header {
+      padding: 20px 24px 12px;
+      border-bottom: 1px solid #edf1f6;
+    }
+
+    .email-outcome-icon {
+      font-size: 42px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .email-outcome-header h3 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: var(--dark-purple);
+    }
+
+    .email-outcome-body {
+      padding: 18px 24px 22px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .email-outcome-body ul {
+      margin: 12px 0 0 18px;
+      padding: 0;
+    }
+
+    .email-outcome-footer {
+      padding: 0 24px 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .email-outcome-footer button {
+      border: none;
+      background: var(--primary-gradient);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    
+    .suspicious-element {
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-block;
+      padding: 2px 0; /* Add padding to ensure tooltip space */
+    }
+    
+    .suspicious-element:hover {
+      background: #fff3cd;
+      color: #856404;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    
+    .suspicious-element.found {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 2px 4px;
+      border-radius: 4px;
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .flag-tooltip {
+      position: fixed; /* Changed to fixed positioning */
+      background: #333;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 10000;
+      min-width: 200px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      max-width: 300px;
+      white-space: normal;
+    }
+    
+    /* Removed - positioning handled by JavaScript */
+    
+    /* Arrow removed for cleaner look */
+    
+    /* Tooltip will be shown via JavaScript */
+    
+    /* Email action buttons */
+    .email-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    /* Phone simulator - modern iOS/Android style */
+    .phone-simulator {
+      width: min(360px, 92vw);
+      height: 680px;
+      margin: 0 auto;
+      padding: 12px 12px 14px;
+      border-radius: 34px;
+      background: linear-gradient(145deg, #111827 0%, #050816 100%);
+      box-shadow: 0 26px 55px rgba(15, 23, 42, 0.35), inset 0 0 0 2px rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .phone-shell {
+      position: relative;
+      height: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      background: #f3f5f9;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 26px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.9);
+      z-index: 20;
+    }
+
+    .phone-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 26px 20px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      background: linear-gradient(180deg, #f9fafb 0%, #edf2f7 100%);
+      color: #0f172a;
+      letter-spacing: 0.04em;
+    }
+
+    .phone-header {
+      background: linear-gradient(180deg, #0f172a 0%, #18212f 100%);
+      color: #fff;
+      padding: 8px 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    .contact-pill {
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.18);
+    }
+
+    .sms-container {
+      padding: 18px 16px 12px;
+      height: calc(100% - 132px);
+      overflow-y: auto;
+      background: linear-gradient(180deg, #eff4fb 0%, #eef2ff 100%);
+      scrollbar-width: thin;
+    }
+
+    .sms-thread {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sms-message {
+      padding: 12px 14px;
+      border-radius: 18px;
+      max-width: 82%;
+      position: relative;
+      animation: messagePop 0.32s ease;
+      line-height: 1.5;
+      font-size: 14px;
+      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.14);
+    }
+
+    .sms-message.incoming {
+      background: #e5e7eb;
+      color: #1f2937;
+      border-bottom-left-radius: 6px;
+      align-self: flex-start;
+    }
+
+    .sms-message.sent {
+      margin-left: auto;
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+      color: #fff;
+      border-bottom-right-radius: 6px;
+      align-self: flex-end;
+    }
+
+    .sms-message strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    @keyframes messagePop {
+      0% { transform: translateY(10px) scale(0.96); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .sms-link {
+      color: #2563eb;
+      text-decoration: underline;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      width: max-content;
+      max-width: 82%;
+      background: rgba(229, 231, 235, 0.95);
+      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.14);
+      border-radius: 18px 18px 18px 6px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .typing-indicator.show {
+      display: inline-flex;
+      animation: messagePop 0.25s ease;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      margin-right: 6px;
+      animation: typingPulse 1.2s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; margin-right: 0; }
+
+    @keyframes typingPulse {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .sms-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+      align-items: stretch;
+    }
+
+    .sms-action-btn {
+      min-height: 58px;
+      border-radius: 16px !important;
+      font-size: 0.96rem !important;
+      font-weight: 700 !important;
+      padding: 0.9rem 0.75rem !important;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .sms-action-btn:hover {
+      transform: translateY(-1px);
+      filter: saturate(1.05);
+    }
+
+    .sms-action-btn.danger { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important; }
+    .sms-action-btn.warning { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%) !important; }
+    .sms-action-btn.success { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important; }
+
+    .sms-consequence {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.72);
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .sms-consequence.show {
+      display: flex;
+      animation: fadeIn 0.22s ease;
+    }
+
+    .sms-consequence-card {
+      max-width: 500px;
+      width: 100%;
+      background: #fff;
+      border-radius: 24px;
+      padding: 26px 22px 18px;
+      box-shadow: 0 30px 55px rgba(15, 23, 42, 0.28);
+      border-left: 10px solid #ef4444;
+      animation: messagePop 0.26s ease;
+    }
+
+    .sms-consequence-card.safe {
+      border-left-color: #22c55e;
+    }
+
+    .sms-consequence-card.warning {
+      border-left-color: #f59e0b;
+    }
+
+    .sms-consequence-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.65rem;
+    }
+
+    .sms-consequence-card p {
+      margin: 0 0 12px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    .sms-consequence-card ul {
+      margin: 0 0 14px;
+      padding-left: 18px;
+      color: #374151;
+      line-height: 1.8;
+    }
+
+    .sms-consequence-card button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb 0%, #0f172a 100%);
+      color: white;
+      min-width: 120px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* Enhanced Voice call simulator */
+    .call-simulator {
+      background: linear-gradient(135deg, #2a2a3e 0%, #16213e 100%);
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    
+    .call-simulator::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      animation: callPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes callPulse {
+      0%, 100% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    
+    .caller-info {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .caller-avatar {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #4a5568, #718096);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border: 3px solid rgba(255,255,255,0.2);
+    }
+    
+    .caller-name {
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .caller-number {
+      font-size: 18px;
+      color: #cbd5e0;
+      margin-bottom: 32px;
+    }
+    
+    .call-status {
+      font-size: 16px;
+      color: #68d391;
+      margin-bottom: 24px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .call-transcript {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: left;
+      backdrop-filter: blur(10px);
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .call-typing {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      width: max-content;
+      padding: 10px 14px;
+      margin: 12px 0;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.14);
+      color: #cbd5e0;
+      font-size: 13px;
+    }
+
+    .call-typing.show {
+      display: inline-flex;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .call-typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #cbd5e0;
+      animation: callTypingPulse 1s ease-in-out infinite;
+    }
+
+    .call-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .call-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes callTypingPulse {
+      0%, 80%, 100% { opacity: 0.35; transform: scale(0.7); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    .call-stage-label {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: #cbd5e0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .call-decision.live {
+      animation: fadeIn 0.35s ease;
+    }
+
+    .call-decision .decision-grid button {
+      min-height: 54px;
+    }
+
+    .call-report-success {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border: 2px solid #34d399;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.24), rgba(5,150,105,0.12));
+      color: #ecfdf5;
+      text-align: left;
+      box-shadow: 0 0 0 5px rgba(52,211,153,0.08), 0 12px 30px rgba(16,185,129,0.18);
+      animation: reportGlow 1.4s ease-in-out infinite alternate;
+    }
+
+    .call-report-success.show {
+      display: block;
+    }
+
+    @keyframes reportGlow {
+      from { box-shadow: 0 0 0 5px rgba(52,211,153,0.08), 0 12px 30px rgba(16,185,129,0.18); }
+      to { box-shadow: 0 0 0 8px rgba(52,211,153,0.16), 0 16px 38px rgba(16,185,129,0.32); }
+    }
+    
+    .transcript-line {
+      margin: 12px 0;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .transcript-speaker {
+      font-weight: 600;
+      color: #007AFF;
+      margin-right: 8px;
+    }
+    
+    .call-actions {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+    }
+    
+    .call-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 32px;
+      transition: all 0.3s ease;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .call-btn.decline {
+      background: linear-gradient(135deg, #ff3b30, #ff6b60);
+    }
+    
+    .call-btn.answer {
+      background: linear-gradient(135deg, #34c759, #5dd87a);
+    }
+    
+    .call-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    
+    .call-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .call-decision {
+      display: none;
+      margin-top: 24px;
+    }
+    
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    
+    /* Gamification elements */
+    .achievement {
+      position: fixed;
+      top: 20px;
+      right: -300px;
+      background: #fff;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: right 0.5s ease;
+      z-index: 1000;
+    }
+    
+    .achievement.show {
+      right: 20px;
+    }
+    
+    .achievement-icon {
+      font-size: 32px;
+      animation: celebrate 0.5s ease;
+    }
+    
+    @keyframes celebrate {
+      0% { transform: scale(0) rotate(0); }
+      50% { transform: scale(1.2) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+    
+    /* Navigation */
+    .navigation { 
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center; 
+      margin-top:40px; 
+      padding-top:32px; 
+      border-top:1px solid var(--medium-gray); 
+    }
+    
+    .btn { 
+      background:var(--primary-gradient); 
+      color:var(--white); 
+      padding:14px 28px; 
+      border:none; 
+      border-radius:8px; 
+      font-size:1rem; 
+      font-weight:600; 
+      cursor:pointer; 
+      transition:all .3s ease; 
+      margin:8px; 
+      display:inline-flex; 
+      align-items:center; 
+      gap:8px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s ease, height 0.5s ease;
+    }
+    
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .btn:hover { 
+      box-shadow:0 6px 20px rgba(29,99,237,.4); 
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-secondary { 
+      background:transparent; 
+      color:var(--primary-purple); 
+      border:2px solid var(--primary-purple); 
+    }
+    
+    .btn-secondary:hover { 
+      background:var(--light-purple); 
+      border-color:var(--dark-purple); 
+      color:var(--dark-purple); 
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ff3b30, #ff6b60);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #34c759, #5dd87a);
+    }
+    
+    /* Enhanced certificate */
+    .certificate {
+      text-align: center;
+      padding: 48px;
+      background: linear-gradient(135deg, #fff 0%, var(--light-purple) 100%);
+      border-radius: 16px;
+      margin: 24px 0;
+      border: 3px solid var(--primary-purple);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .certificate::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(29,99,237,0.1), transparent);
+      animation: shine 3s linear infinite;
+    }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .certificate-seal {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 24px;
+      position: relative;
+      animation: sealRotate 20s linear infinite;
+    }
+    
+    @keyframes sealRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .trophy-icon {
+      font-size: 80px;
+      color: #FFD700;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      animation: trophyGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes trophyGlow {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    /* Confetti */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--primary-purple);
+      animation: confettiFall 3s linear;
+    }
+    
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    
+    
+    /* SCORM status indicator */
+    .scorm-status {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(23,25,30,.9);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: .75rem;
+      display: none;
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Feedback styles */
+    .feedback {
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 16px;
+      display: none;
+    }
+    
+    .feedback.correct {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid var(--success-green);
+    }
+    
+    .feedback.incorrect {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid var(--error-red);
+    }
+    
+    .feedback.warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 2px solid #ffc107;
+    }
+    
+    /* Responsive */
+    @media (max-width:768px) {
+      .slide { padding:32px 24px; }
+      h1 { font-size:2rem; }
+      h2 { font-size:1.5rem; }
+      .phone-simulator { transform: scale(0.8); margin: -40px auto; }
+      .sms-actions { grid-template-columns: 1fr; }
+      .decision-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Achievement Popup -->
+  <div class="achievement" id="achievementPopup">
+    <div class="achievement-icon" id="achievementIcon">🏆</div>
+    <div>
+      <div style="font-weight:700; color:var(--dark-purple);" id="achievementTitle">Achievement Unlocked!</div>
+      <div style="font-size:14px; color:#6c757d;" id="achievementText">You're making great progress!</div>
+    </div>
+  </div>
+
+  <!-- Confetti Container -->
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <div class="module-container">
+    <div class="grc-header">
+      <div class="grc-logo">
+        <div class="grc-owl" onclick="owlClick()">👾</div>
+        <span>Phishing, Smishing & Vishing</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+
+    <!-- Slide 1: Welcome -->
+    <div class="slide active" id="slide1">
+      <h1>🛡️ Defend Against Social Engineering</h1>
+      <p style="text-align:center; font-size:1.25rem; margin-bottom:32px;">
+        Welcome, Security Champion! Your mission: Master the art of detecting phishing, smishing, and vishing attacks.
+      </p>
+      
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:40px auto; max-width:800px;">
+        <div class="welcome-card" style="text-align:center;">
+          <span class="info-card-icon">📧</span>
+          <h3>Email Phishing</h3>
+          <p>Deceptive emails designed to steal your credentials</p>
+        </div>
+        <div class="welcome-card" style="text-align:center;">
+          <span class="info-card-icon">📱</span>
+          <h3>SMS Smishing</h3>
+          <p>Fake text messages with malicious links</p>
+        </div>
+        <div class="welcome-card" style="text-align:center;">
+          <span class="info-card-icon">📞</span>
+          <h3>Voice Vishing</h3>
+          <p>Phone calls requesting sensitive data</p>
+        </div>
+      </div>
+      
+      <div class="navigation">
+        <span></span>
+        <button class="btn" onclick="startTraining()">Begin Your Training →</button>
+      </div>
+    </div>
+
+    <!-- Slide 2: What are Phishing, Smishing, and Vishing? -->
+    <div class="slide" id="slide2">
+      <h2>🔎 What are Phishing, Smishing, and Vishing?</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-card-icon">📧</span>
+          <h3>Phishing (Email)</h3>
+          <p>Deceptive emails crafted to steal credentials or push malware. Often use spoofed domains and urgent language.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">📱</span>
+          <h3>Smishing (SMS)</h3>
+          <p>Text messages that impersonate services, urging quick action via links. Usually contain shortened URLs.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">📞</span>
+          <h3>Vishing (Voice)</h3>
+          <p>Phone calls that apply pressure, impersonate IT, banks, or leadership. May request sensitive information.</p>
+        </div>
+      </div>
+      <div class="visual-demo">
+        <p><strong>Attacker goals:</strong> steal secrets/tokens, install malware, hijack payments, or bypass MFA via "push fatigue."</p>
+      </div>
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="nextSlide()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Slide 3: Common Red Flags -->
+    <div class="slide" id="slide3">
+      <h2>🚩 Common Red Flags</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-card-icon">⏰</span>
+          <h3>Urgency or Fear</h3>
+          <p>"Act now or accounts will be closed." Attackers create panic to bypass your judgment.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">🎭</span>
+          <h3>Odd Sender Info</h3>
+          <p>Misspelled domains, free email providers, spoofed caller IDs. Check carefully!</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">🔗</span>
+          <h3>Suspicious Links</h3>
+          <p>ZIPs, .html login pages, shortened URLs. Hover to check before clicking.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">🔑</span>
+          <h3>Secret Requests</h3>
+          <p>Passwords, MFA codes, API tokens, gift cards. Legitimate sources never ask!</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">🚫</span>
+          <h3>Process Bypass</h3>
+          <p>"Let's skip ticketing/approvals" or off-platform chats. Always follow protocol.</p>
+        </div>
+      </div>
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="nextSlide()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Slide 4: How to Respond to Attacks -->
+    <div class="slide" id="slide4">
+      <h2>📣 How to Respond to Attacks</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-card-icon">🚫</span>
+          <h3>Don't Engage</h3>
+          <p>Never click links, reply to messages, or share codes over the phone with suspicious contacts.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">✅</span>
+          <h3>Verify Independently</h3>
+          <p>Re-type official URLs, call back via known numbers, or Slack your verified contacts.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card-icon">📢</span>
+          <h3>Report Immediately</h3>
+          <p>Forward to <code style="background:#e3f2fd;padding:2px 6px;border-radius:4px;">security@yourcompany.com</code> or report in Slack <code style="background:#e3f2fd;padding:2px 6px;border-radius:4px;">your security reporting channel</code></p>
+        </div>
+      </div>
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="nextSlide()">Start Practice →</button>
+      </div>
+    </div>
+
+    <!-- Slide 5: Interactive Email Challenge -->
+    <div class="slide" id="slide5">
+      <h2>📧 Email Detective Challenge</h2>
+      <p>Can you spot all 6 red flags in this suspicious email? Click on anything that looks suspicious!</p>
+      
+      <div class="email-score-pill" style="position: absolute; top: 24px; right: 24px;">
+        <span>Flags found:</span>
+        <span style="font-size: 20px; font-weight: 800; color: var(--success-green);" id="emailScore">0/6</span>
+      </div>
+      
+      <div class="email-shell">
+        <div class="email-toolbar">
+          <div class="mail-app-controls">
+            <span class="mail-dot red"></span>
+            <span class="mail-dot yellow"></span>
+            <span class="mail-dot green"></span>
+          </div>
+          <div style="font-size: 13px; font-weight: 700; color: #475569;">Inbox • Security Review</div>
+        </div>
+
+        <div class="email-simulator">
+          <div class="email-header">
+            <div class="email-field">
+              <span class="email-label">From:</span>
+              <span class="email-value suspicious-element" onclick="foundFlag(this, 'spoofed-sender')">
+                IT Support &lt;support@secure-portal.com&gt;
+                <span class="flag-tooltip">Spoofed domain! Suspicious sender address</span>
+              </span>
+            </div>
+            <div class="email-field">
+              <span class="email-label">Subject:</span>
+              <span class="email-value suspicious-element" onclick="foundFlag(this, 'urgent-subject')">
+                URGENT: Account Security Alert - Immediate Action Required
+                <span class="flag-tooltip">Excessive urgency is a red flag!</span>
+              </span>
+            </div>
+          </div>
+          <div class="email-content">
+            <div class="email-body-box">
+              <p>Dear <span class="suspicious-element" onclick="foundFlag(this, 'generic-greeting')">User<span class="flag-tooltip">Generic greeting - legitimate emails use your name</span></span>,</p>
+              
+              <p>We have detected suspicious activity on your account. Your account will be 
+              <span class="suspicious-element" onclick="foundFlag(this, 'threat')">suspended within 24 hours<span class="flag-tooltip">Threatening deadline creates panic</span></span> 
+              unless you verify your identity immediately.</p>
+              
+              <p>Please click the link below to secure your account:</p>
+              <p style="text-align:center; margin: 18px 0;">
+                <span class="suspicious-element" onclick="foundFlag(this, 'bad-link')" style="color:#007AFF; text-decoration:underline; font-weight:600;">
+                  https://secure-portal.com/verify-account
+                  <span class="flag-tooltip">Malicious URL with spoofed domain!</span>
+                </span>
+              </p>
+              
+              <p>Thank you,<br>
+                <span class="suspicious-element" onclick="foundFlag(this, 'mismatched-signature')">
+                  Security Team
+                  <span class="flag-tooltip">Signature doesn't match sender - claims to be Security Team but From says IT Support!</span>
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="email-actions">
+            <button class="btn btn-danger" onclick="emailAction('report')">Report Phishing</button>
+            <button class="btn btn-secondary" onclick="emailAction('delete')">Delete Email</button>
+            <button class="btn" onclick="emailAction('click')">Click Link</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="emailFeedback" style="margin-top:24px;"></div>
+      
+      <div class="navigation">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="nextSlide()" id="emailContinueBtn" style="display:none;">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 6: SMS Simulator -->
+    <div class="slide" id="slide6">
+      <h2>📱 SMS Phishing Simulator</h2>
+      <p>You received a text message! Analyze it and decide what to do.</p>
+      
+      <div class="phone-simulator" aria-label="SMS phishing simulator">
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-statusbar">
+            <span>9:41</span>
+            <span>5G</span>
+            <span>▣ 84%</span>
+          </div>
+          <div class="phone-header">
+            <span class="contact-pill">Payroll Alert</span>
+            <span class="status-dot"></span>
+          </div>
+          <div class="sms-container" id="smsContainer">
+            <div class="sms-thread" id="smsThread"></div>
+            <div class="typing-indicator" id="smsTypingIndicator" aria-live="polite">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="sms-actions" id="smsActionsContainer">
+        <button class="btn sms-action-btn danger" onclick="smsResponse('click')">Click the link</button>
+        <button class="btn sms-action-btn warning" onclick="smsResponse('ignore')">Ignore it</button>
+        <button class="btn sms-action-btn success" onclick="smsResponse('verify')">Verify via official channels</button>
+      </div>
+      
+      <div id="smsFeedback" style="margin-top:24px;"></div>
+      
+      <div class="navigation" style="margin-top:48px;">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="nextSlide()" id="smsContinueBtn" style="display:none;">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 7: Enhanced Voice Call Simulator -->
+    <div class="slide" id="slide7">
+      <h2>📞 Vishing Call Simulator</h2>
+      <p>Incoming call! The caller claims to be from IT Support...</p>
+      
+      <div class="call-simulator">
+        <div class="caller-info">
+          <div class="caller-avatar">👤</div>
+          <div class="caller-name">IT Support</div>
+          <div class="caller-number">Unknown Number</div>
+          <div class="call-status" id="callStatus">Incoming call...</div>
+        </div>
+        
+        <div class="call-transcript" id="callTranscript">
+          <div class="transcript-line">
+            <span class="transcript-speaker">Caller:</span>
+            <span>Hi, this is Jake from IT Support. We're doing emergency maintenance and need to speak with you about your account.</span>
+          </div>
+          <div class="call-typing" id="callTypingIndicator" aria-live="polite">
+            <span>Caller is speaking</span>
+            <span class="call-typing-dot"></span>
+            <span class="call-typing-dot"></span>
+            <span class="call-typing-dot"></span>
+          </div>
+        </div>
+        
+        <div class="call-actions" id="initialCallActions">
+          <button class="call-btn decline" onclick="callAction('decline')" title="Decline">
+            📞
+          </button>
+          <button class="call-btn answer" onclick="callAction('answer')" title="Answer">
+            📞
+          </button>
+        </div>
+        
+        <div class="call-decision" id="callDecision">
+          <span class="call-stage-label" id="callStageLabel">Live call decision</span>
+          <p id="callDecisionPrompt" style="font-weight:600; margin-bottom:16px; color:#fff; font-size:18px;">What do you do?</p>
+          <div class="decision-grid" id="callDecisionGrid">
+          </div>
+          <div class="call-report-success" id="callReportSuccess">
+            <strong>✅ Threat interrupted</strong><br>
+            You ended the pressure loop, avoided sharing a secret, and reported the impersonation through a trusted channel.
+          </div>
+        </div>
+      </div>
+      
+      <div id="callFeedback" style="margin-top:24px;"></div>
+      
+      <div class="navigation" style="margin-top:32px;">
+        <button class="btn btn-secondary" onclick="previousSlide()">← Back</button>
+        <button class="btn" onclick="completeTraining()" id="callContinueBtn" style="display:none;">Complete Training →</button>
+      </div>
+    </div>
+
+    <!-- Slide 8: Certificate -->
+    <div class="slide" id="slide8">
+      <div class="certificate">
+        <div class="certificate-seal">
+          <div class="trophy-icon">🏆</div>
+        </div>
+        <h1 style="color:var(--dark-purple); margin-bottom:16px;">Security Champion Certified!</h1>
+        <p style="font-size:1.25rem; margin-bottom:8px;">You've successfully completed</p>
+        <p style="font-size:1.5rem; font-weight:700; color:var(--primary-purple); margin-bottom:24px;">Social Engineering Defense Training</p>
+        
+        <div style="margin:32px 0; text-align:center;">
+          <div>
+            <div style="font-size:2rem; font-weight:800; color:var(--success-green);" id="finalScore">100%</div>
+            <div style="color:#6c757d;">Score</div>
+          </div>
+        </div>
+        
+        <p style="color:var(--primary-purple); font-weight:700; font-size:1.125rem; margin:24px 0;">
+          Stay Vigilant. Stay Secure. 👾
+        </p>
+        
+        <button class="btn" onclick="exitModule()">Exit Training</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scorm-status" id="scormStatus">SCORM: Disconnected</div>
+
+  <script>
+    // SCORM API wrapper
+    var scorm = {
+      version: null, api: null,
+      init: function() {
+        try {
+          this.api = this.getAPI();
+          if (this.api) {
+            this.version = this.getVersion();
+            var result = this.api.LMSInitialize ? this.api.LMSInitialize("") : this.api.Initialize("");
+            if (result == "true") {
+              this.setStatus("initialized");
+              this.setValue("cmi.core.lesson_status", "incomplete");
+              this.setValue("cmi.core.score.min", "0");
+              this.setValue("cmi.core.score.max", "100");
+              this.setValue("cmi.core.score.raw", "0");
+              this.commit();
+              return true;
+            }
+          }
+        } catch(e) { console.log("SCORM API not available - standalone mode"); }
+        return false;
+      },
+      getAPI: function() {
+        var api=null; 
+        if (window.parent && window.parent!=window) api=this.findAPI(window.parent);
+        if (!api && window.opener) api=this.findAPI(window.opener);
+        if (!api) api=this.findAPI(window);
+        return api;
+      },
+      findAPI: function(win) {
+        var i=0; 
+        while(!win.API && !win.API_1484_11 && win.parent && win.parent!=win && i<500){ 
+          i++; 
+          win=win.parent; 
+        }
+        return win.API || win.API_1484_11;
+      },
+      getVersion: function(){ 
+        if(this.api){ 
+          if(this.api.LMSInitialize) return "1.2"; 
+          if(this.api.Initialize) return "2004";
+        } 
+        return null; 
+      },
+      getValue: function(e){ 
+        if(!this.api) return ""; 
+        return this.version=="1.2"? this.api.LMSGetValue(e): this.api.GetValue(e); 
+      },
+      setValue: function(e,v){ 
+        if(!this.api) return false; 
+        return this.version=="1.2"? this.api.LMSSetValue(e,v): this.api.SetValue(e,v); 
+      },
+      commit: function(){ 
+        if(!this.api) return false; 
+        return this.version=="1.2"? this.api.LMSCommit(""): this.api.Commit(""); 
+      },
+      finish: function(){ 
+        if(!this.api) return false; 
+        return this.version=="1.2"? this.api.LMSFinish(""): this.api.Terminate(""); 
+      },
+      setStatus: function(status){ 
+        var el=document.getElementById('scormStatus'); 
+        if(el){ 
+          el.textContent='SCORM: '+status; 
+          el.style.display='block'; 
+        } 
+      }
+    };
+
+    // Enhanced state management
+    let gameState = {
+      currentSlide: 1,
+      totalSlides: 8,
+      achievements: [],
+      emailFlagsFound: [],
+      scenariosCompleted: 0,
+      totalScenarios: 3,
+      emailComplete: false,
+      smsComplete: false,
+      callComplete: false,
+      callStage: 0,
+      callRisk: 'unanswered',
+      callConversationStarted: false,
+      choices: {},
+      completedScenarios: {}
+    };
+    
+    // Initialize
+    window.onload = function() {
+      
+      // Check if SCORM should be disabled (when loaded in iframe)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('scorm') !== 'disabled') {
+        scorm.init();
+      }
+      
+      // Check if we should resume from a specific slide
+      const resumeSlide = urlParams.get('slide');
+      if (resumeSlide && !isNaN(resumeSlide)) {
+        gameState.currentSlide = parseInt(resumeSlide);
+        // Show the correct slide immediately to avoid flash
+        showSlide(gameState.currentSlide);
+      }
+      
+      // Restore choices if provided
+      const savedChoices = urlParams.get('choices');
+      if (savedChoices) {
+        try {
+          const choicesData = JSON.parse(decodeURIComponent(savedChoices));
+          // Handle both old and new data structures
+          if (choicesData.choices !== undefined) {
+            gameState.choices = choicesData.choices;
+            gameState.completedScenarios = choicesData.completedScenarios || {};
+            gameState.completedActions = choicesData.completedActions || {};
+          } else {
+            gameState.choices = choicesData;
+          }
+        } catch (e) {
+          console.warn('Failed to parse saved choices:', e);
+        }
+      }
+      
+      updateProgress();
+      updateSCORM();
+      initTooltips();
+      
+      // Restore choices if we're resuming on simulation slides
+      if ((gameState.currentSlide === 5 || gameState.currentSlide === 6 || gameState.currentSlide === 7) && savedChoices) {
+        setTimeout(restoreChoices, 50);
+      }
+      
+    };
+    
+    // Initialize tooltips with proper positioning
+    function initTooltips() {
+      const elements = document.querySelectorAll('.suspicious-element');
+      elements.forEach(el => {
+        const tooltip = el.querySelector('.flag-tooltip');
+        if (tooltip) {
+          // Move tooltip to body for better positioning
+          document.body.appendChild(tooltip);
+          
+          const updateTooltipPosition = (e) => {
+            // Make tooltip visible first to get dimensions
+            tooltip.style.display = 'block';
+            const tooltipHeight = tooltip.offsetHeight;
+            const tooltipWidth = tooltip.offsetWidth;
+            
+            // Always show tooltip to the right of cursor to avoid blocking
+            let top = e.clientY - (tooltipHeight / 2);
+            let left = e.clientX + 15;
+            
+            // If tooltip would go off right, position to left
+            if (left + tooltipWidth > window.innerWidth - 10) {
+              left = e.clientX - tooltipWidth - 15;
+            }
+            
+            // Keep tooltip within viewport vertically
+            if (top < 10) top = 10;
+            if (top + tooltipHeight > window.innerHeight - 10) {
+              top = window.innerHeight - tooltipHeight - 10;
+            }
+            
+            // Keep tooltip within viewport horizontally
+            if (left < 10) left = 10;
+            if (left + tooltipWidth > window.innerWidth - 10) {
+              left = window.innerWidth - tooltipWidth - 10;
+            }
+            
+            tooltip.style.top = top + 'px';
+            tooltip.style.left = left + 'px';
+            tooltip.style.opacity = '1';
+          };
+          
+          el.addEventListener('mouseenter', updateTooltipPosition);
+          el.addEventListener('mousemove', updateTooltipPosition);
+          
+          el.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            setTimeout(() => {
+              tooltip.style.display = 'none';
+            }, 300);
+          });
+        }
+      });
+    }
+    
+    // Alien easter egg
+    function owlClick() {
+      const owl = document.querySelector('.grc-owl');
+      owl.style.animation = 'none';
+      setTimeout(() => {
+        owl.style.animation = 'bounce 2s ease-in-out infinite, spin 0.5s ease';
+      }, 10);
+      if (!gameState.achievements.includes('owl')) {
+        gameState.achievements.push('owl');
+        showAchievement('👾', 'Wise Discovery!', 'You found the easter egg!');
+      }
+      // If in iframe, send message to parent to go home
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'goHome' }, '*');
+      }
+    }
+    
+    // Achievement system
+    function showAchievement(icon, title, text) {
+      const popup = document.getElementById('achievementPopup');
+      document.getElementById('achievementIcon').textContent = icon;
+      document.getElementById('achievementTitle').textContent = title;
+      document.getElementById('achievementText').textContent = text;
+      
+      popup.classList.add('show');
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    }
+    
+    function updateEmailScoreDisplay() {
+      const score = gameState.emailFlagsFound.length;
+      const scoreEl = document.getElementById('emailScore');
+      if (scoreEl) {
+        scoreEl.textContent = score + '/6';
+      }
+    }
+
+    function showEmailOutcome(type) {
+      const overlay = document.createElement('div');
+      overlay.className = 'email-outcome show';
+
+      const titleMap = {
+        report: {
+          icon: '✅',
+          title: 'Threat contained',
+          headline: 'You reported the phishing message correctly.',
+          body: 'This stopped the risky email from reaching other staff and allowed security to investigate the sender and block it.'
+        },
+        delete: {
+          icon: '⚠️',
+          title: 'Email removed, but risk remains',
+          headline: 'Deleting the email was safer than clicking, but it was not the best response.',
+          body: 'The message was not reported for investigation, so security could miss the campaign and your colleagues might be targeted next.'
+        },
+        click: {
+          icon: '🚨',
+          title: 'Compromise simulation',
+          headline: 'Clicking the link could have exposed your credentials.',
+          body: 'The fake login page was designed to steal the user’s password and MFA details. A trusted step would have been to report the email and verify the link through official channels.'
+        }
+      };
+
+      const content = titleMap[type] || titleMap.delete;
+
+      overlay.innerHTML = `
+        <div class="email-outcome-card">
+          <div class="email-outcome-header">
+            <span class="email-outcome-icon">${content.icon}</span>
+            <h3>${content.title}</h3>
+          </div>
+          <div class="email-outcome-body">
+            <strong>${content.headline}</strong>
+            <p>${content.body}</p>
+            ${type === 'report' ? `
+              <ul>
+                <li>Reported to the security team</li>
+                <li>Sender blocked and investigated</li>
+                <li>Users were protected from a wider phishing wave</li>
+              </ul>
+            ` : `
+              <ul>
+                <li>Always verify senders before trusting urgency</li>
+                <li>Report suspicious emails to security</li>
+                <li>Use official portals instead of links inside unexpected messages</li>
+              </ul>
+            `}
+          </div>
+          <div class="email-outcome-footer">
+            <button onclick="this.closest('.email-outcome').remove()">Continue</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+    }
+
+    // Email detective game
+    function foundFlag(element, flagId) {
+      if (gameState.emailFlagsFound.includes(flagId)) return;
+      
+      element.classList.add('found');
+      gameState.emailFlagsFound.push(flagId);
+      gameState.choices[`email_flag_${flagId}`] = true;
+      
+      // Track that this flag was found
+      if (!gameState.completedActions) gameState.completedActions = {};
+      if (!gameState.completedActions[`email_flag_${flagId}`]) {
+        gameState.completedActions[`email_flag_${flagId}`] = true;
+      }
+      
+      updateEmailScoreDisplay();
+      
+      saveChoice(`email_flag_${flagId}`, true);
+      
+      if (gameState.emailFlagsFound.length === 1 && !gameState.achievements.includes('first_flag')) {
+        gameState.achievements.push('first_flag');
+        showAchievement('👁️', 'Sharp Eye', 'Found your first red flag!');
+      }
+      
+      if (gameState.emailFlagsFound.length === 6) {
+        showAchievement('🔍', 'Eagle Eye', 'Found all email red flags!');
+        gameState.emailComplete = true;
+        checkEmailCompletion();
+      }
+    }
+    
+    // Email actions
+    function emailAction(action) {
+      const feedbackDiv = document.getElementById('emailFeedback');
+      const actionKey = `email_action`;
+      
+      // Initialize completedActions if needed
+      if (!gameState.completedActions) gameState.completedActions = {};
+      
+      // Clear previous feedback
+      feedbackDiv.innerHTML = '';
+      
+      // Clear all button styling and indicators first
+      const emailButtons = document.querySelectorAll('.email-actions button');
+      emailButtons.forEach(btn => {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.fontWeight = '';
+        btn.style.border = '';
+        btn.style.opacity = '';
+        btn.style.transform = '';
+        btn.style.boxShadow = '';
+        btn.style.position = '';
+        btn.style.zIndex = '';
+        btn.style.filter = '';
+        const existingIndicator = btn.querySelector('.action-indicator');
+        if (existingIndicator) existingIndicator.remove();
+        const existingLabel = btn.querySelector('.action-label');
+        if (existingLabel) existingLabel.remove();
+      });
+      
+      let clickedButton;
+      emailButtons.forEach(btn => {
+        if ((action === 'report' && btn.textContent.includes('Report')) ||
+            (action === 'delete' && btn.textContent.includes('Delete')) ||
+            (action === 'click' && btn.textContent.includes('Click'))) {
+          clickedButton = btn;
+        }
+      });
+      
+      emailButtons.forEach(btn => {
+        if (btn !== clickedButton) {
+          btn.style.opacity = '0.7';
+          btn.style.transform = 'scale(0.98)';
+        }
+      });
+      
+      switch(action) {
+        case 'report':
+          if (clickedButton) {
+            clickedButton.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+            clickedButton.style.color = 'white';
+            clickedButton.style.fontWeight = 'bold';
+            clickedButton.style.border = '4px solid #2E7D32';
+            clickedButton.style.transform = 'scale(1.12)';
+            clickedButton.style.boxShadow = '0 8px 30px rgba(76,175,80,0.4), 0 0 25px rgba(76,175,80,0.3)';
+            clickedButton.style.opacity = '1';
+            clickedButton.style.position = 'relative';
+            clickedButton.style.zIndex = '100';
+            
+            const icon = document.createElement('span');
+            icon.className = 'action-indicator';
+            icon.style.cssText = 'margin-right: 12px; font-size: 1.6em; vertical-align: middle;';
+            icon.textContent = '✅';
+            clickedButton.insertBefore(icon, clickedButton.firstChild);
+            
+            const label = document.createElement('div');
+            label.className = 'action-label';
+            label.style.cssText = `
+              position: absolute;
+              top: -30px;
+              left: 50%;
+              transform: translateX(-50%);
+              background: #4CAF50;
+              color: white;
+              padding: 4px 12px;
+              border-radius: 15px;
+              font-size: 12px;
+              font-weight: bold;
+              white-space: nowrap;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            label.textContent = '🎯 YOUR CHOICE';
+            clickedButton.appendChild(label);
+          }
+          showEmailOutcome('report');
+          feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+            ✅ Excellent! Reporting phishing emails to security@yourcompany.com protects everyone.
+          </div>`;
+          if (!gameState.completedActions[actionKey]) {
+            gameState.completedActions[actionKey] = true;
+            gameState.choices[actionKey] = action;
+            saveChoice(actionKey, action);
+            showAchievement('🛡️', 'Phishing Fighter', 'Reported a phishing email!');
+          }
+          gameState.emailComplete = true;
+          checkEmailCompletion();
+          emailButtons.forEach(btn => {
+            btn.disabled = true;
+            if (!btn.textContent.includes('Report')) {
+              btn.style.opacity = '0.6';
+            }
+          });
+          break;
+        case 'delete':
+          if (clickedButton) {
+            clickedButton.style.background = 'linear-gradient(135deg, #ff9800, #E65100)';
+            clickedButton.style.color = 'white';
+            clickedButton.style.fontWeight = 'bold';
+            clickedButton.style.border = '4px solid #E65100';
+            clickedButton.style.transform = 'scale(1.12)';
+            clickedButton.style.boxShadow = '0 8px 30px rgba(255,152,0,0.4), 0 0 25px rgba(255,152,0,0.3)';
+            clickedButton.style.opacity = '1';
+            clickedButton.style.position = 'relative';
+            clickedButton.style.zIndex = '100';
+            
+            const icon = document.createElement('span');
+            icon.className = 'action-indicator';
+            icon.style.cssText = 'margin-right: 12px; font-size: 1.6em; vertical-align: middle;';
+            icon.textContent = '⚠️';
+            clickedButton.insertBefore(icon, clickedButton.firstChild);
+            
+            const label = document.createElement('div');
+            label.className = 'action-label';
+            label.style.cssText = `
+              position: absolute;
+              top: -30px;
+              left: 50%;
+              transform: translateX(-50%);
+              background: #ff9800;
+              color: white;
+              padding: 4px 12px;
+              border-radius: 15px;
+              font-size: 12px;
+              font-weight: bold;
+              white-space: nowrap;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            label.textContent = '🎯 YOUR CHOICE';
+            clickedButton.appendChild(label);
+            clickedButton.style.border = '2px solid #ff9800';
+          }
+          showEmailOutcome('delete');
+          feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+            ⚠️ Deleting is okay, but reporting helps protect your colleagues too! Try again - what's the BEST action?
+          </div>`;
+          gameState.choices[actionKey] = action;
+          saveChoice(actionKey, action);
+          break;
+        case 'click':
+          if (clickedButton) {
+            clickedButton.style.background = 'linear-gradient(135deg, #f44336, #C62828)';
+            clickedButton.style.color = 'white';
+            clickedButton.style.fontWeight = 'bold';
+            clickedButton.style.border = '4px solid #C62828';
+            clickedButton.style.transform = 'scale(1.12)';
+            clickedButton.style.boxShadow = '0 8px 30px rgba(244,67,54,0.4), 0 0 25px rgba(244,67,54,0.3)';
+            clickedButton.style.opacity = '1';
+            clickedButton.style.position = 'relative';
+            clickedButton.style.zIndex = '100';
+            
+            const icon = document.createElement('span');
+            icon.className = 'action-indicator';
+            icon.style.cssText = 'margin-right: 12px; font-size: 1.6em; vertical-align: middle;';
+            icon.textContent = '❌';
+            clickedButton.insertBefore(icon, clickedButton.firstChild);
+            
+            const label = document.createElement('div');
+            label.className = 'action-label';
+            label.style.cssText = `
+              position: absolute;
+              top: -30px;
+              left: 50%;
+              transform: translateX(-50%);
+              background: #f44336;
+              color: white;
+              padding: 4px 12px;
+              border-radius: 15px;
+              font-size: 12px;
+              font-weight: bold;
+              white-space: nowrap;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            label.textContent = '🎯 YOUR CHOICE';
+            clickedButton.appendChild(label);
+          }
+          showEmailOutcome('click');
+          feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+            ❌ Never click suspicious links! This could have compromised your account. Try again - what should you do instead?
+          </div>`;
+          showAchievement('📚', 'Learning Moment', 'Remember: Never click suspicious links!');
+          gameState.choices[actionKey] = action;
+          saveChoice(actionKey, action);
+          break;
+      }
+    }
+    
+    function checkEmailCompletion() {
+      if (gameState.emailComplete) {
+        document.getElementById('emailContinueBtn').style.display = 'inline-flex';
+      }
+    }
+    
+    // SMS simulator
+    function smsLinkClick() {
+      showPhishingLinkPopup();
+    }
+
+    function showPhishingLinkPopup() {
+      const popupHTML = `
+        <div id="phishingLinkPopup" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: background 0.3s ease;">
+          <div id="phishingLinkContent" style="background: white; border-radius: 16px; width: 90%; max-width: 500px; padding: 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); transform: scale(0.7); opacity: 0; transition: all 0.3s ease;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🚨</div>
+            <h2 style="color: #f44336; margin-bottom: 16px;">Phishing Link Detected!</h2>
+            <p style="color: #666; font-size: 16px; margin-bottom: 24px; line-height: 1.6;">
+              <strong>Never click suspicious links!</strong><br><br>
+              This would have taken you to a phishing site designed to steal your banking credentials.
+            </p>
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 16px; border-radius: 4px; margin-bottom: 24px; text-align: left;">
+              <p style="margin: 0; color: #856404; font-size: 14px; line-height: 1.5;">
+                <strong>⚠️ Warning Signs:</strong><br>
+                • Shortened URL (bit.ly)<br>
+                • Creates urgency ("immediately")<br>
+                • Unsolicited text message<br>
+                • Requests sensitive banking info
+              </p>
+            </div>
+            <button onclick="closePhishingLinkPopup()" style="background: linear-gradient(135deg, #7B2CBF 0%, #06A77D 100%); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">
+              I Understand
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', popupHTML);
+
+      // Trigger animation immediately
+      requestAnimationFrame(() => {
+        const popup = document.getElementById('phishingLinkPopup');
+        const content = document.getElementById('phishingLinkContent');
+        if (popup && content) {
+          popup.style.background = 'rgba(0,0,0,0.7)';
+          content.style.transform = 'scale(1)';
+          content.style.opacity = '1';
+        }
+      });
+    }
+
+    function showSmsConsequence(type) {
+      const overlay = document.createElement('div');
+      overlay.className = 'sms-consequence show';
+
+      const content = {
+        click: {
+          className: 'danger',
+          icon: '🚨',
+          title: 'Credentials at risk',
+          text: 'The link led to a fake payroll portal that stole login details and banking information. The scammer could now access your account and payment data.',
+          list: ['Attackers often hide malicious redirects behind shortened links.', 'Always stop, verify the sender, and use official channels instead of the text link.', 'This is exactly why urgent texts asking for banking data are dangerous.']
+        },
+        ignore: {
+          className: 'warning',
+          icon: '⚠️',
+          title: 'Safer than clicking, but not the best response',
+          text: 'Ignoring the message is safer than clicking, but the best practice is to verify the request independently before deciding anything.',
+          list: ['Call the payroll or vendor using a trusted number you already know.', 'Report suspicious texts to your security team or phishing mailbox.', 'Do not use any link or phone number from the message itself.']
+        },
+        verify: {
+          className: 'safe',
+          icon: '✅',
+          title: 'Correct response',
+          text: 'You stopped and verified the request through official channels instead of trusting the SMS. That protected your account and prevented a phishing compromise.',
+          list: ['Official payroll portals should be accessed from a bookmark or trusted app.', 'Security teams can investigate and block scam numbers quickly.', 'This is the safest way to handle urgent requests.']
+        }
+      };
+
+      const chosen = content[type] || content.ignore;
+      overlay.innerHTML = `
+        <div class="sms-consequence-card ${chosen.className}">
+          <h3>${chosen.icon} ${chosen.title}</h3>
+          <p>${chosen.text}</p>
+          <ul>${chosen.list.map(item => `<li>${item}</li>`).join('')}</ul>
+          <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+            <button onclick="this.closest('.sms-consequence').remove()">Continue</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+    }
+
+    function queueSmsMessage(text, direction, delay) {
+      const thread = document.getElementById('smsThread');
+      const typing = document.getElementById('smsTypingIndicator');
+
+      if (!thread || !typing) return;
+
+      setTimeout(() => {
+        typing.classList.add('show');
+      }, delay * 0.7);
+
+      setTimeout(() => {
+        typing.classList.remove('show');
+        const bubble = document.createElement('div');
+        bubble.className = `sms-message ${direction}`;
+        bubble.innerHTML = text;
+        thread.appendChild(bubble);
+        thread.parentElement.scrollTop = thread.parentElement.scrollHeight;
+      }, delay);
+    }
+
+    function startSmsConversation() {
+      const thread = document.getElementById('smsThread');
+      const typing = document.getElementById('smsTypingIndicator');
+
+      if (!thread || !typing || gameState.smsConversationStarted) return;
+
+      gameState.smsConversationStarted = true;
+      thread.innerHTML = '';
+      typing.classList.remove('show');
+
+      const conversation = [
+        '<strong>PAYROLL-ALERT</strong>Your latest paycheck couldn’t be processed. Update your banking info immediately to avoid delays: <span class="sms-link" onclick="smsLinkClick()">bit.ly/payroll-update-urgent</span>',
+        '<strong>PAYROLL-ALERT</strong>This is your final warning. If you do not verify immediately, your paycheck may be delayed for 30 days.',
+        '<strong>PAYROLL-ALERT</strong>Reply now or open the secure link to avoid a hold on your account.'
+      ];
+
+      conversation.forEach((message, index) => {
+        queueSmsMessage(message, 'incoming', 600 + (index * 1500));
+      });
+    }
+
+    function closePhishingLinkPopup() {
+      const popup = document.getElementById('phishingLinkPopup');
+      const content = document.getElementById('phishingLinkContent');
+
+      if (popup && content) {
+        // Animate out
+        popup.style.background = 'rgba(0,0,0,0)';
+        content.style.transform = 'scale(0.7)';
+        content.style.opacity = '0';
+
+        // Remove after animation completes
+        setTimeout(() => {
+          popup.remove();
+        }, 300);
+      }
+    }
+    
+    function smsResponse(action) {
+      const container = document.getElementById('smsContainer');
+      const thread = document.getElementById('smsThread');
+      const feedbackDiv = document.getElementById('smsFeedback');
+      const actionsContainer = document.getElementById('smsActionsContainer');
+      const smsKey = `sms_action`;
+      
+      // Check if already completed with correct answer
+      if (!gameState.completedActions) gameState.completedActions = {};
+      if (gameState.completedActions[smsKey]) return;
+      
+      // Clear previous feedback
+      feedbackDiv.innerHTML = '';
+      
+      // Remove any previous user responses
+      if (thread) {
+        thread.querySelectorAll('.sms-message.sent').forEach(msg => msg.remove());
+      }
+      
+      // Visual feedback for button selection
+      const buttons = actionsContainer.querySelectorAll('button');
+      
+      // Clear previous styling and indicators from all buttons first
+      buttons.forEach(btn => {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.fontWeight = '';
+        btn.style.border = '';
+        btn.style.opacity = '';
+        btn.style.boxShadow = '';
+        btn.style.transform = '';
+        btn.style.position = '';
+        btn.style.zIndex = '';
+        btn.style.filter = '';
+        // Remove any existing indicators
+        const existingIndicator = btn.querySelector('.sms-indicator');
+        if (existingIndicator) existingIndicator.remove();
+        const existingLabel = btn.querySelector('.sms-label');
+        if (existingLabel) existingLabel.remove();
+      });
+      
+      // Find the clicked button
+      let selectedButton = null;
+      buttons.forEach(btn => {
+        if (btn.onclick && btn.onclick.toString().includes(`'${action}'`)) {
+          selectedButton = btn;
+        }
+      });
+      
+      // Make non-selected buttons slightly faded but still readable
+      buttons.forEach(btn => {
+        if (btn !== selectedButton) {
+          btn.style.opacity = '0.7';
+          btn.style.transform = 'scale(0.98)';
+        }
+      });
+      
+      if (selectedButton) {
+        // Apply STRONG visual indicator based on the action
+        const isCorrect = action === 'verify';
+        const isPartial = action === 'ignore';
+        const color = isCorrect ? '#4CAF50' : (isPartial ? '#ff9800' : '#f44336');
+        const darkColor = isCorrect ? '#2E7D32' : (isPartial ? '#E65100' : '#C62828');
+        const icon = isCorrect ? '✅' : (isPartial ? '⚠️' : '❌');
+        
+        selectedButton.style.background = `linear-gradient(135deg, ${color}, ${darkColor})`;
+        selectedButton.style.color = 'white';
+        selectedButton.style.fontWeight = 'bold';
+        selectedButton.style.border = `4px solid ${darkColor}`;
+        selectedButton.style.transform = 'scale(1.12)';
+        selectedButton.style.boxShadow = `0 8px 30px ${color}66, 0 0 25px ${color}44`;
+        selectedButton.style.opacity = '1';
+        selectedButton.style.position = 'relative';
+        selectedButton.style.zIndex = '100';
+        
+        // Add BIG icon
+        const indicatorEl = document.createElement('span');
+        indicatorEl.className = 'sms-indicator';
+        indicatorEl.style.cssText = `
+          margin-right: 12px;
+          font-size: 1.6em;
+          vertical-align: middle;
+          display: inline-block;
+        `;
+        indicatorEl.textContent = icon;
+        selectedButton.insertBefore(indicatorEl, selectedButton.firstChild);
+        
+        // Add floating label
+        const label = document.createElement('div');
+        label.className = 'sms-label';
+        label.style.cssText = `
+          position: absolute;
+          top: -30px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: ${color};
+          color: white;
+          padding: 4px 12px;
+          border-radius: 15px;
+          font-size: 12px;
+          font-weight: bold;
+          white-space: nowrap;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          z-index: 101;
+        `;
+        label.textContent = '🎯 YOUR CHOICE';
+        selectedButton.appendChild(label);
+      }
+      
+      let response = document.createElement('div');
+      response.className = 'sms-message sent';
+      
+      switch(action) {
+        case 'click':
+          response.textContent = 'I clicked the link...';
+          if (thread) thread.appendChild(response);
+          showSmsConsequence('click');
+          feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+            ❌ Never click links in unexpected texts! Scammers use shortened URLs to hide malicious sites. Try again!
+          </div>`;
+          showAchievement('⚠️', 'Learning Moment', 'Remember: Verify through official channels!');
+          // Save the choice even though it's incorrect
+          gameState.choices[smsKey] = action;
+          saveChoice(smsKey, action);
+          // Re-enable buttons for retry
+          break;
+        case 'ignore':
+          response.textContent = 'I’ll ignore it for now.';
+          if (thread) thread.appendChild(response);
+          showSmsConsequence('ignore');
+          feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+            ⚠️ Good instinct, but there's a better option! What would be the BEST way to handle this?
+          </div>`;
+          // Save the choice even though it's not optimal
+          gameState.choices[smsKey] = action;
+          saveChoice(smsKey, action);
+          // Let them try again
+          break;
+        case 'verify':
+          response.textContent = 'I’ll verify through official channels.';
+          if (thread) thread.appendChild(response);
+          showSmsConsequence('verify');
+          feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+            ✅ Perfect! Always verify through official channels. Report to security@yourcompany.com or Slack your security reporting channel.
+          </div>`;
+          // Track completion once for SMS
+          if (!gameState.completedActions[smsKey]) {
+            gameState.completedActions[smsKey] = true;
+            gameState.choices[smsKey] = action;
+            saveChoice(smsKey, action);
+          }
+          showAchievement('🛡️', 'SMS Defender', 'Made the right choice!');
+          gameState.smsComplete = true;
+          document.getElementById('smsContinueBtn').style.display = 'inline-flex';
+          // Disable buttons after correct answer
+          actionsContainer.querySelectorAll('button').forEach(btn => {
+            btn.disabled = true;
+            // Don't change opacity for the selected button
+            if (!btn.onclick || !btn.onclick.toString().includes(`'verify'`)) {
+              btn.style.opacity = '0.6';
+            }
+          });
+          break;
+      }
+
+      if (thread) {
+        thread.parentElement.scrollTop = thread.parentElement.scrollHeight;
+      }
+    }
+
+    function restoreSmsState() {
+      if (gameState.currentSlide !== 6) return;
+      const choice = gameState.choices && gameState.choices.sms_action;
+      const actions = document.querySelectorAll('#smsActionsContainer button');
+
+      if (gameState.smsComplete || choice === 'verify') {
+        actions.forEach(btn => { btn.disabled = true; });
+        document.getElementById('smsContinueBtn').style.display = 'inline-flex';
+      }
+
+      if (choice) {
+        const selected = Array.from(actions).find(btn => {
+          const text = btn.textContent.trim().toLowerCase();
+          return choice === 'verify' ? text.includes('verify') : choice === 'ignore' ? text.includes('ignore') : text.includes('click');
+        });
+        if (selected) {
+          selected.style.background = choice === 'verify' ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' : (choice === 'ignore' ? 'linear-gradient(135deg, #ff9800, #E65100)' : 'linear-gradient(135deg, #f44336, #C62828)');
+          selected.style.color = '#fff';
+          selected.style.fontWeight = '700';
+          selected.style.border = '3px solid ' + (choice === 'verify' ? '#2E7D32' : (choice === 'ignore' ? '#E65100' : '#C62828'));
+          selected.style.boxShadow = '0 8px 24px rgba(0,0,0,0.18)';
+        }
+      }
+    }
+    
+    // Enhanced Voice call simulator
+    function callAction(action) {
+      const status = document.getElementById('callStatus');
+      const transcript = document.getElementById('callTranscript');
+      const initialActions = document.getElementById('initialCallActions');
+      const decision = document.getElementById('callDecision');
+      const initialCallKey = `initial_call_action`;
+
+      if (action === 'answer') {
+        status.textContent = 'Call connected - pressure escalating';
+        status.style.color = '#ff3b30';
+        transcript.style.display = 'block';
+        initialActions.style.display = 'none';
+        gameState.callConversationStarted = true;
+        gameState.callStage = 0;
+        gameState.callRisk = 'engaged';
+        queueCallLine('Caller:', 'We detected a sign-in from another country. If we do not fix this now, your account will be locked before the maintenance window closes.', 900, () => {
+          renderCallStage(0);
+        });
+      } else {
+        status.textContent = 'Call declined before engagement';
+        status.style.color = '#34d399';
+        initialActions.style.display = 'none';
+        gameState.callRisk = 'early_hangup';
+        const feedbackDiv = document.getElementById('callFeedback');
+        feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">✅ Good decision. You declined an unexpected call before the attacker could build pressure. Verify through official channels and report the number.</div>`;
+        if (!gameState.completedActions) gameState.completedActions = {};
+        if (!gameState.completedActions[initialCallKey]) {
+          gameState.completedActions[initialCallKey] = true;
+          gameState.choices[initialCallKey] = action;
+          saveChoice(initialCallKey, action);
+        }
+        gameState.choices.call_risk = gameState.callRisk;
+        saveChoice('call_risk', gameState.callRisk);
+        gameState.callComplete = true;
+        document.getElementById('callContinueBtn').style.display = 'inline-flex';
+      }
+    }
+
+    function queueCallLine(speaker, text, delay, callback) {
+      const transcript = document.getElementById('callTranscript');
+      const typing = document.getElementById('callTypingIndicator');
+      if (!transcript || !typing) return;
+
+      typing.classList.add('show');
+      setTimeout(() => {
+        typing.classList.remove('show');
+        const line = document.createElement('div');
+        line.className = 'transcript-line';
+        line.innerHTML = `<span class="transcript-speaker">${speaker}</span><span>${text}</span>`;
+        transcript.appendChild(line);
+        transcript.scrollTop = transcript.scrollHeight;
+        if (callback) callback();
+      }, delay);
+    }
+
+    function renderCallStage(stage) {
+      const decision = document.getElementById('callDecision');
+      const prompt = document.getElementById('callDecisionPrompt');
+      const label = document.getElementById('callStageLabel');
+      const grid = document.getElementById('callDecisionGrid');
+      if (!decision || !prompt || !label || !grid) return;
+
+      const stages = {
+        0: {
+          label: 'Pressure 1 of 4: authority',
+          prompt: 'The caller claims to be IT and says your account is at risk. What do you do?',
+          options: [
+            ['report', 'Hang up and report the call'],
+            ['question', 'Ask how I can verify this independently'],
+            ['stay', 'Stay on the line and follow instructions']
+          ]
+        },
+        1: {
+          label: 'Pressure 2 of 4: urgency',
+          prompt: 'The caller wants immediate action before a deadline. How do you respond?',
+          options: [
+            ['report', 'End the call and report it'],
+            ['hangup', 'Hang up, but do not report yet'],
+            ['share', 'Continue and provide the requested MFA code']
+          ]
+        },
+        2: {
+          label: 'Pressure 3 of 4: fear',
+          prompt: 'The caller warns that refusing will lock your account and notify your manager. What now?',
+          options: [
+            ['report', 'Hang up and report to security'],
+            ['hangup', 'Hang up and deal with it later'],
+            ['stay', 'Keep talking so I can avoid the lockout']
+          ]
+        },
+        3: {
+          label: 'Pressure 4 of 4: secret request',
+          prompt: 'The caller asks for the six-digit MFA code. Choose your final response.',
+          options: [
+            ['report', 'Hang up and report the impersonation'],
+            ['hangup', 'Hang up without reporting'],
+            ['share', 'Read the MFA code to the caller']
+          ]
+        },
+        4: {
+          label: 'After the call: protect others',
+          prompt: 'You ended the call. What should you do next?',
+          options: [
+            ['report', 'Report the call through official security channels'],
+            ['ignore', 'Ignore it and move on'],
+            ['question', 'Call the number back to challenge them']
+          ]
+        }
+      };
+
+      const current = stages[stage] || stages[0];
+      gameState.callStage = stage;
+      label.textContent = current.label;
+      prompt.textContent = current.prompt;
+      grid.innerHTML = current.options.map(option => `<button class="btn ${option[0] === 'report' ? 'btn-success' : option[0] === 'hangup' || option[0] === 'ignore' ? 'btn-danger' : 'btn-secondary'}" onclick="callResponse('${option[0]}')">${option[1]}</button>`).join('');
+      decision.style.display = 'block';
+      decision.classList.remove('live');
+      void decision.offsetWidth;
+      decision.classList.add('live');
+    }
+
+    function callResponse(action) {
+      const transcript = document.getElementById('callTranscript');
+      const feedbackDiv = document.getElementById('callFeedback');
+      const decisionGrid = document.getElementById('callDecisionGrid');
+      const callKey = `call_action`;
+      if (!gameState.completedActions) gameState.completedActions = {};
+      if (gameState.completedActions[callKey]) return;
+
+      const buttons = decisionGrid.querySelectorAll('button');
+      const selectedButton = Array.from(buttons).find(btn => btn.getAttribute('onclick') === `callResponse('${action}')`);
+      const isCorrect = action === 'report';
+      const isDangerous = action === 'share' || action === 'stay' || action === 'ignore';
+      const color = isCorrect ? '#22c55e' : (isDangerous ? '#ef4444' : '#f59e0b');
+      const darkColor = isCorrect ? '#15803d' : (isDangerous ? '#b91c1c' : '#b45309');
+
+      buttons.forEach(btn => {
+        btn.style.opacity = '0.58';
+        btn.style.transform = 'scale(0.98)';
+      });
+      if (selectedButton) {
+        selectedButton.style.background = `linear-gradient(135deg, ${color}, ${darkColor})`;
+        selectedButton.style.color = '#fff';
+        selectedButton.style.border = `3px solid ${darkColor}`;
+        selectedButton.style.fontWeight = '700';
+        selectedButton.style.opacity = '1';
+        selectedButton.style.transform = 'scale(1.06)';
+        selectedButton.style.boxShadow = `0 0 0 5px ${color}33, 0 10px 28px ${color}55`;
+      }
+
+      const responseText = {
+        report: 'I will contact IT through the official directory. Goodbye.',
+        hangup: '*Hangs up before sharing anything*',
+        question: 'How can I verify this request through the service desk?',
+        stay: 'Okay, I am still listening.',
+        share: 'The code is...',
+        ignore: '*Does not report the call*'
+      }[action] || 'I need to think about this.';
+      const userLine = document.createElement('div');
+      userLine.className = 'transcript-line';
+      userLine.innerHTML = `<span class="transcript-speaker" style="color:${isCorrect ? '#34d399' : '#fbbf24'};">You:</span><span>${responseText}</span>`;
+      transcript.appendChild(userLine);
+      transcript.scrollTop = transcript.scrollHeight;
+      gameState.choices[callKey] = action;
+      saveChoice(callKey, action);
+
+      if (isCorrect) {
+        gameState.callRisk = 'reported';
+        gameState.choices.call_risk = gameState.callRisk;
+        saveChoice('call_risk', gameState.callRisk);
+        gameState.completedActions[callKey] = true;
+        gameState.callComplete = true;
+        feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">✅ Excellent. You ended the pressure loop, refused the secret request, and reported the impersonation through a trusted channel.</div>`;
+        document.getElementById('callReportSuccess').classList.add('show');
+        document.getElementById('callContinueBtn').style.display = 'inline-flex';
+        showAchievement('🦸', 'Vishing Victor', 'You stopped and reported a voice phishing attack!');
+        buttons.forEach(btn => { btn.disabled = true; });
+        return;
+      }
+
+      if (action === 'share' || action === 'stay') {
+        gameState.callRisk = 'too_long';
+        gameState.choices.call_risk = gameState.callRisk;
+        saveChoice('call_risk', gameState.callRisk);
+        feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">❌ The attacker kept you engaged with authority, urgency, and fear. Never share MFA codes or let a caller rush you. You can still end the call and report it.</div>`;
+        showAchievement('📚', 'Pressure Recognized', 'Urgency and fear are tools attackers use to keep you talking.');
+        if (gameState.callStage < 3) {
+          const nextStage = gameState.callStage + 1;
+          const lines = [
+            'Caller: I need your approval right now. Do not open another ticket or you will delay the fix.',
+            'Caller: Your manager will be notified if you refuse. Read the code before it expires.',
+            'Caller: This is the final warning. Give me the six digits and I can stop the lockout.'
+          ];
+          queueCallLine('Caller:', lines[nextStage - 1], 900, () => renderCallStage(nextStage));
+        } else {
+          renderCallStage(4);
+        }
+        return;
+      }
+
+      if (action === 'hangup' || action === 'question' || action === 'ignore') {
+        gameState.callRisk = action === 'hangup' ? 'early_hangup' : 'still_engaged';
+        gameState.choices.call_risk = gameState.callRisk;
+        saveChoice('call_risk', gameState.callRisk);
+        feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">⚠️ You avoided the immediate trap. The safest next step is to report the call instead of engaging with or ignoring it.</div>`;
+        renderCallStage(4);
+      }
+    }
+    
+    // Real-world scenarios
+    function loadScenarios() {
+      const scenarios = [
+        {
+          title: 'CEO Fraud Email',
+          type: 'email',
+          description: 'You receive this email from "CEO@yourcompany-ceo.net": "I need you to urgently purchase $5000 in gift cards for a client meeting. This is confidential - don\'t discuss with anyone. Reply with the codes ASAP."',
+          options: [
+            { text: 'Purchase the gift cards immediately', feedback: 'Never! This is a classic CEO fraud scam.', correct: false },
+            { text: 'Reply asking for more details', feedback: 'Don\'t engage! Verify through official channels.', correct: false },
+            { text: 'Check with CEO\'s assistant via Slack', feedback: 'Good approach, but reporting is better.', correct: false },
+            { text: 'Forward to security@yourcompany.com', feedback: 'Perfect! Report suspicious emails immediately.', correct: true }
+          ]
+        },
+        {
+          title: 'Fake LinkedIn Recruiter',
+          type: 'sms',
+          description: 'SMS from unknown number: "Hi! I\'m a recruiter with amazing job opportunities. Verify your experience here: bit.ly/jobs-verify-now"',
+          options: [
+            { text: 'Click to see the opportunities', feedback: 'Never click unexpected links!', correct: false },
+            { text: 'Text back asking for company name', feedback: 'Don\'t engage with suspicious texts.', correct: false },
+            { text: 'Check LinkedIn directly', feedback: 'Smart! Always use official platforms.', correct: true },
+            { text: 'Block and report as spam', feedback: 'Good, but checking LinkedIn first is best.', correct: false }
+          ]
+        },
+        {
+          title: 'Fake IT Support Call',
+          type: 'voice',
+          description: 'Caller: "This is an automated message from IT Support. Your VPN access will expire in 1 hour. Press 1 to speak with support and avoid disruption."',
+          options: [
+            { text: 'Press 1 to talk to support', feedback: 'No! This is a vishing attempt.', correct: false },
+            { text: 'Hang up and ignore', feedback: 'Good, but reporting would be better.', correct: false },
+            { text: 'Hang up and check VPN status yourself', feedback: 'Smart, but also report it!', correct: false },
+            { text: 'Hang up and report to security', feedback: 'Perfect! Report through official channels like security@yourcompany.com or Slack your security reporting channel.', correct: true }
+          ]
+        }
+      ];
+      
+      const container = document.getElementById('scenarioContainer');
+      
+      // Clear existing scenarios to prevent duplicates
+      container.innerHTML = '';
+      
+      scenarios.forEach((scenario, index) => {
+        const scenarioDiv = document.createElement('div');
+        scenarioDiv.style.cssText = 'background:#f8f9fa;padding:24px;border-radius:12px;margin-bottom:24px;border:2px solid #dee2e6;';
+        
+        const icon = scenario.type === 'email' ? '📧' : scenario.type === 'sms' ? '📱' : '📞';
+        
+        scenarioDiv.innerHTML = `
+          <h3 style="color:var(--dark-purple);margin-bottom:16px;">${icon} Scenario ${index + 1}: ${scenario.title}</h3>
+          <p style="margin-bottom:20px;font-style:italic;">${scenario.description}</p>
+          <div id="scenario${index}Options" style="display:grid;gap:12px;">
+            ${scenario.options.map((opt, i) => 
+              `<button class="btn btn-secondary" style="text-align:left;padding:16px;" onclick="scenarioResponse(${index}, ${i})">${opt.text}</button>`
+            ).join('')}
+          </div>
+          <div id="scenario${index}Feedback" style="margin-top:16px;"></div>
+        `;
+        
+        container.appendChild(scenarioDiv);
+      });
+    }
+    
+    function scenarioResponse(scenarioIndex, optionIndex) {
+      const choiceKey = `scenario_${scenarioIndex}`;
+      
+      // Check if this scenario was already completed (correct answer given)
+      if (gameState.completedScenarios && gameState.completedScenarios[choiceKey]) {
+        return; // Prevent any further interaction
+      }
+      
+      // Save the choice
+      gameState.choices[choiceKey] = optionIndex;
+      saveChoice(choiceKey, optionIndex);
+      
+      const scenarios = [
+        {
+          options: [
+            { feedback: 'Never! This is a classic CEO fraud scam.', correct: false },
+            { feedback: 'Don\'t engage! Verify through official channels.', correct: false },
+            { feedback: 'Good approach, but reporting is better.', correct: false },
+            { feedback: 'Perfect! Report suspicious emails immediately.', correct: true }
+          ]
+        },
+        {
+          options: [
+            { feedback: 'Never click unexpected links!', correct: false },
+            { feedback: 'Don\'t engage with suspicious texts.', correct: false },
+            { feedback: 'Smart! Always use official platforms.', correct: true },
+            { feedback: 'Good, but checking LinkedIn first is best.', correct: false }
+          ]
+        },
+        {
+          options: [
+            { feedback: 'No! This is a vishing attempt.', correct: false },
+            { feedback: 'Good, but reporting would be better.', correct: false },
+            { feedback: 'Smart, but also report it!', correct: false },
+            { feedback: 'Perfect! This helps protect everyone.', correct: true }
+          ]
+        }
+      ];
+      
+      const scenario = scenarios[scenarioIndex];
+      const option = scenario.options[optionIndex];
+      const feedbackDiv = document.getElementById(`scenario${scenarioIndex}Feedback`);
+      const buttons = document.querySelectorAll(`#scenario${scenarioIndex}Options button`);
+      
+      // Clear previous styling from all buttons first
+      buttons.forEach(btn => {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.fontWeight = '';
+        btn.style.border = '';
+        btn.style.opacity = '';
+      });
+      
+      // Highlight the selected button
+      buttons[optionIndex].style.background = option.correct ? 
+        'linear-gradient(135deg, #4CAF50, #45a049)' : 
+        'linear-gradient(135deg, #ff9800, #f57c00)';
+      buttons[optionIndex].style.color = 'white';
+      buttons[optionIndex].style.fontWeight = '600';
+      buttons[optionIndex].style.border = option.correct ? '2px solid #4CAF50' : '2px solid #ff9800';
+      
+      if (option.correct) {
+        feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+          ✅ ${option.feedback}
+        </div>`;
+        // Mark as completed
+        if (!gameState.completedScenarios) gameState.completedScenarios = {};
+        gameState.completedScenarios[choiceKey] = true;
+        
+        // Disable all buttons for this scenario ONLY after correct answer
+        buttons.forEach(btn => {
+          btn.disabled = true;
+          btn.classList.add('disabled');
+        });
+        
+        gameState.scenariosCompleted++;
+        
+        if (gameState.scenariosCompleted === gameState.totalScenarios) {
+          document.getElementById('completeBtn').style.display = 'inline-flex';
+          if (!gameState.achievements.includes('scenario_master')) {
+            gameState.achievements.push('scenario_master');
+            showAchievement('🎯', 'Scenario Master', 'Completed all real-world scenarios!');
+          }
+        }
+      } else {
+        feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+          ❌ ${option.feedback} Try again!
+        </div>`;
+        // Mark the incorrect button with orange but keep enabled
+        buttons[optionIndex].style.opacity = '0.7';
+      }
+    }
+    
+    // Navigation
+    function updateProgress() {
+      document.getElementById('progressBar').style.width = (gameState.currentSlide / gameState.totalSlides) * 100 + '%';
+    }
+    
+    function showSlide(n) {
+      document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+      document.getElementById('slide' + n).classList.add('active');
+      gameState.currentSlide = n;
+      updateProgress();
+      updateSCORM();
+      
+      // Notify parent frame if embedded
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'slideChange',
+          slide: n,
+          module: 'phishing'
+        }, '*');
+      }
+      
+      
+      // Restore simulation states for slides 5, 6, 7
+      if ((n === 5 || n === 6 || n === 7) && gameState.choices && Object.keys(gameState.choices).length > 0) {
+        // Call restoreChoices with minimal delay to ensure elements are ready
+        setTimeout(restoreChoices, 50);
+      }
+
+      if (n === 6) {
+        setTimeout(startSmsConversation, 150);
+      }
+    }
+    
+    function nextSlide() {
+      if (gameState.currentSlide < gameState.totalSlides) {
+        showSlide(gameState.currentSlide + 1);
+      }
+    }
+    
+    function previousSlide() {
+      if (gameState.currentSlide > 1) {
+        showSlide(gameState.currentSlide - 1);
+      }
+    }
+    
+    function startTraining() {
+      showAchievement('🚀', 'Training Started!', 'Your security journey begins!');
+      nextSlide();
+    }
+    
+    // Completion
+    function completeTraining() {
+      
+      // Notify parent frame if embedded
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'moduleComplete',
+          module: 'phishing'
+        }, '*');
+      }
+      
+      // Set to 100% since they completed all simulations
+      const finalScore = 100;
+      
+      document.getElementById('finalScore').textContent = finalScore + '%';
+      
+      // Update SCORM
+      scorm.setValue('cmi.core.score.raw', String(finalScore));
+      scorm.setValue('cmi.core.lesson_status', finalScore >= 80 ? 'passed' : 'completed');
+      scorm.commit();
+      
+      showSlide(8);
+      launchConfetti();
+      showAchievement('🏆', 'Training Complete!', 'You are now a Security Champion!');
+    }
+    
+    function launchConfetti() {
+      const container = document.getElementById('confettiContainer');
+      const colors = ['#1D63ED', '#4CAF50', '#FFD700', '#FF6B6B', '#4ECDC4'];
+      
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = (Math.random() * 10 + 5) + 'px';
+          confetti.style.height = confetti.style.width;
+          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          container.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 20);
+      }
+    }
+    
+    function exitModule() {
+      scorm.setValue('cmi.core.exit', '');
+      scorm.commit();
+      scorm.finish();
+      
+      window.close();
+      setTimeout(() => {
+        alert('You can now close this window.');
+      }, 100);
+    }
+    
+    // Choice persistence functions
+    function saveChoice(slideId, choice) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'choiceUpdate',
+          slideId: slideId,
+          choice: choice,
+          choicesData: {
+            choices: gameState.choices,
+            completedScenarios: gameState.completedScenarios || {},
+            completedActions: gameState.completedActions || {}
+          }
+        }, '*');
+      }
+    }
+    
+    function restoreChoices() {
+      const choicesData = gameState.choices || {};
+      const completedScenarios = gameState.completedScenarios || {};
+      
+      // Reset scenarios completed count before restoring
+      gameState.scenariosCompleted = 0;
+      
+      // Restore email flags
+      Object.keys(choicesData).forEach(choiceKey => {
+        if (choiceKey.startsWith('email_flag_')) {
+          const flagId = choiceKey.replace('email_flag_', '');
+          const element = document.querySelector(`[onclick*="foundFlag"][onclick*="${flagId}"]`);
+          if (element) {
+            element.classList.add('found');
+            if (!gameState.emailFlagsFound.includes(flagId)) {
+              gameState.emailFlagsFound.push(flagId);
+            }
+          }
+        }
+      });
+      
+      // Update email score
+      if (gameState.emailFlagsFound.length > 0) {
+        document.getElementById('emailScore').textContent = gameState.emailFlagsFound.length + '/6';
+      }
+      
+      // Restore email action
+      if (choicesData['email_action'] && gameState.currentSlide === 5) {
+        const action = choicesData['email_action'];
+        const feedbackDiv = document.getElementById('emailFeedback');
+        const emailActions = document.querySelectorAll('.email-actions button');
+        
+        // Find the selected button based on the saved action
+        let selectedButton = null;
+        emailActions.forEach(btn => {
+          // Check the actual text content, not including any added icons
+          const btnText = Array.from(btn.childNodes)
+            .filter(node => node.nodeType === Node.TEXT_NODE)
+            .map(node => node.textContent)
+            .join('');
+          
+          if ((action === 'report' && btnText.includes('Report')) ||
+              (action === 'delete' && btnText.includes('Delete')) ||
+              (action === 'click' && btnText.includes('Click'))) {
+            selectedButton = btn;
+          }
+        });
+        
+        // Apply styles to all buttons
+        emailActions.forEach(btn => {
+          if (btn !== selectedButton) {
+            // Fade non-selected buttons
+            btn.style.opacity = '0.7';
+            btn.style.transform = 'scale(0.98)';
+          }
+        });
+        
+        if (selectedButton) {
+          // Determine colors based on action
+          const isCorrect = action === 'report';
+          const isPartial = action === 'delete';
+          const color = isCorrect ? '#4CAF50' : (isPartial ? '#ff9800' : '#f44336');
+          const darkColor = isCorrect ? '#2E7D32' : (isPartial ? '#E65100' : '#C62828');
+          const icon = isCorrect ? '✅' : (isPartial ? '⚠️' : '❌');
+          
+          // Apply strong visual highlighting
+          selectedButton.style.background = `linear-gradient(135deg, ${color}, ${darkColor})`;
+          selectedButton.style.color = 'white';
+          selectedButton.style.fontWeight = 'bold';
+          selectedButton.style.border = `4px solid ${darkColor}`;
+          selectedButton.style.transform = 'scale(1.12)';
+          selectedButton.style.boxShadow = `0 8px 30px ${color}66, 0 0 25px ${color}44`;
+          selectedButton.style.opacity = '1';
+          selectedButton.style.position = 'relative';
+          selectedButton.style.zIndex = '100';
+          
+          // Remove any existing indicators first
+          const existingIndicator = selectedButton.querySelector('.action-indicator');
+          if (existingIndicator) existingIndicator.remove();
+          const existingLabel = selectedButton.querySelector('.action-label');
+          if (existingLabel) existingLabel.remove();
+          
+          // Add fresh icon
+          const iconEl = document.createElement('span');
+          iconEl.className = 'action-indicator';
+          iconEl.style.cssText = 'margin-right: 12px; font-size: 1.6em; vertical-align: middle; display: inline-block;';
+          iconEl.textContent = icon;
+          selectedButton.insertBefore(iconEl, selectedButton.firstChild);
+          
+          // Add fresh label
+          const label = document.createElement('div');
+          label.className = 'action-label';
+          label.style.cssText = `
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${color};
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+          `;
+          label.textContent = '🎯 YOUR CHOICE';
+          selectedButton.appendChild(label);
+        }
+        
+        // Show appropriate feedback and handle completion
+        if (action === 'report') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+              ✅ Excellent! Reporting phishing emails to security@yourcompany.com protects everyone.
+            </div>`;
+          }
+          gameState.emailComplete = true;
+          // Mark as completed so action functions know
+          if (!gameState.completedActions) gameState.completedActions = {};
+          gameState.completedActions['email_action'] = true;
+          const btn = document.getElementById('emailContinueBtn');
+          if (btn) btn.style.display = 'inline-flex';
+          // Disable all buttons after correct answer
+          emailActions.forEach(btn => {
+            btn.disabled = true;
+            if (btn !== selectedButton) {
+              btn.style.opacity = '0.6';
+            }
+          });
+        } else if (action === 'delete') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+              ⚠️ Deleting is okay, but reporting helps protect your colleagues too!
+            </div>`;
+          }
+        } else if (action === 'click') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+              ❌ Never click suspicious links! This could have compromised your account.
+            </div>`;
+          }
+        }
+      }
+      
+      // Restore SMS action
+      if (choicesData['sms_action']) {
+        const action = choicesData['sms_action'];
+        const feedbackDiv = document.getElementById('smsFeedback');
+        const actionsContainer = document.getElementById('smsActionsContainer');
+        
+        // Show appropriate feedback based on action
+        if (action === 'verify') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+              ✅ Perfect! Always verify through official channels. Report to security@yourcompany.com or Slack your security reporting channel.
+            </div>`;
+          }
+          gameState.smsComplete = true;
+          // Mark as completed
+          if (!gameState.completedActions) gameState.completedActions = {};
+          gameState.completedActions['sms_action'] = true;
+          const btn = document.getElementById('smsContinueBtn');
+          if (btn) btn.style.display = 'inline-flex';
+        } else if (action === 'ignore') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+              ⚠️ Good instinct, but there's a better option!
+            </div>`;
+          }
+        } else if (action === 'click') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+              ❌ Never click links in unexpected texts!
+            </div>`;
+          }
+        }
+        
+        // Apply enhanced visual indicators to SMS buttons
+        if (actionsContainer) {
+          const buttons = actionsContainer.querySelectorAll('button');
+          
+          // Clear previous styling from all buttons first
+          buttons.forEach(btn => {
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.style.fontWeight = '';
+            btn.style.border = '';
+            btn.style.opacity = '';
+            btn.style.boxShadow = '';
+            btn.style.transform = '';
+            btn.style.position = '';
+            btn.style.zIndex = '';
+            btn.style.filter = '';
+          });
+          
+          // Make non-selected buttons slightly faded but still readable
+          buttons.forEach(btn => {
+            if (btn.onclick && !btn.onclick.toString().includes(`'${action}'`)) {
+              btn.style.opacity = '0.7';
+              btn.style.transform = 'scale(0.98)';
+            }
+            // Only disable buttons if the correct answer was chosen
+            if (action === 'verify') {
+              btn.disabled = true;
+              btn.classList.add('disabled');
+              // Reduce opacity only for non-selected buttons
+              if (!btn.onclick || !btn.onclick.toString().includes(`'verify'`)) {
+                btn.style.opacity = '0.6';
+              }
+            }
+          });
+          
+          // Find and STRONGLY highlight the selected button
+          buttons.forEach(btn => {
+            if (btn.onclick && btn.onclick.toString().includes(`'${action}'`)) {
+              const isCorrect = action === 'verify';
+              const isPartial = action === 'ignore';
+              const color = isCorrect ? '#4CAF50' : (isPartial ? '#ff9800' : '#f44336');
+              const darkColor = isCorrect ? '#2E7D32' : (isPartial ? '#E65100' : '#C62828');
+              const icon = isCorrect ? '✅' : (isPartial ? '⚠️' : '❌');
+              
+              btn.style.background = `linear-gradient(135deg, ${color}, ${darkColor})`;
+              btn.style.color = 'white';
+              btn.style.fontWeight = 'bold';
+              btn.style.border = `4px solid ${darkColor}`;
+              btn.style.transform = 'scale(1.12)';
+              btn.style.boxShadow = `0 8px 30px ${color}66, 0 0 25px ${color}44`;
+              btn.style.opacity = '1';
+              btn.style.position = 'relative';
+              btn.style.zIndex = '100';
+              btn.style.filter = 'none';
+              btn.style.opacity = '1';  // Ensure selected button is fully visible
+              
+              // Only add icon if it doesn't already exist
+              if (!btn.querySelector('.sms-indicator')) {
+                const indicatorEl = document.createElement('span');
+                indicatorEl.className = 'sms-indicator';
+                indicatorEl.style.cssText = `
+                  margin-right: 12px;
+                  font-size: 1.6em;
+                  vertical-align: middle;
+                  display: inline-block;
+                `;
+                indicatorEl.textContent = icon;
+                btn.insertBefore(indicatorEl, btn.firstChild);
+              }
+              
+              // Only add label if it doesn't already exist
+              if (!btn.querySelector('.sms-label')) {
+                const label = document.createElement('div');
+                label.className = 'sms-label';
+                label.style.cssText = `
+                  position: absolute;
+                  top: -30px;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  background: ${color};
+                  color: white;
+                  padding: 4px 12px;
+                  border-radius: 15px;
+                  font-size: 12px;
+                  font-weight: bold;
+                  white-space: nowrap;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                  z-index: 101;
+                `;
+                label.textContent = '🎯 YOUR CHOICE';
+                btn.appendChild(label);
+              }
+            }
+          });
+        }
+      }
+      
+      // Restore call action
+      if (choicesData['call_action'] || choicesData['initial_call_action'] === 'decline') {
+        const action = choicesData['call_action'];
+        gameState.callComplete = true;
+        // Mark as completed
+        if (!gameState.completedActions) gameState.completedActions = {};
+        
+        const btn = document.getElementById('callContinueBtn');
+        const feedbackDiv = document.getElementById('callFeedback');
+        const decisionGrid = document.getElementById('callDecisionGrid');
+        
+        if (action === 'report') {
+          gameState.completedActions['call_action'] = true;
+        } else if (choicesData['initial_call_action'] === 'decline') {
+          gameState.completedActions['initial_call_action'] = true;
+          // Show Continue button for declined call
+          if (btn) btn.style.display = 'inline-flex';
+        }
+        
+        // Show appropriate feedback based on action
+        if (action === 'report') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+              ✅ Excellent! This is the best response. Always verify through official channels and report to security@yourcompany.com or Slack your security reporting channel.
+            </div>`;
+          }
+          if (btn) btn.style.display = 'inline-flex';
+          // Disable all buttons after correct answer
+          if (decisionGrid) {
+            decisionGrid.querySelectorAll('button').forEach(btn => {
+              btn.disabled = true;
+              if (!btn.onclick || !btn.onclick.toString().includes(`'report'`)) {
+                btn.style.opacity = '0.6';
+              }
+            });
+          }
+        } else if (action === 'hangup') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+              ⚠️ Good instinct! But what's the BEST action to take after hanging up?
+            </div>`;
+          }
+        } else if (action === 'question') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback warning" style="display:block;">
+              ⚠️ Good thinking, but it's safer to hang up and verify independently.
+            </div>`;
+          }
+        } else if (action === 'share') {
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block="">
+              ❌ NEVER share MFA codes! IT will never ask for them.
+            </div>`;
+          }
+        }
+        
+        // Apply enhanced visual indicators to call decision buttons
+        if (action) {
+          const decisionGrid = document.getElementById('callDecisionGrid');
+          if (decisionGrid) {
+            const buttons = decisionGrid.querySelectorAll('button');
+            
+            // Clear previous styling from all buttons first
+            buttons.forEach(btn => {
+              btn.style.background = '';
+              btn.style.color = '';
+              btn.style.fontWeight = '';
+              btn.style.border = '';
+              btn.style.opacity = '';
+              btn.style.boxShadow = '';
+              btn.style.transform = '';
+              btn.style.position = '';
+              btn.style.zIndex = '';
+              btn.style.filter = '';
+            });
+            
+            // Make non-selected buttons slightly faded but still readable
+            buttons.forEach(btn => {
+              if (btn.onclick && !btn.onclick.toString().includes(`'${action}'`)) {
+                btn.style.opacity = '0.7';
+                btn.style.transform = 'scale(0.98)';
+              }
+              // Only disable buttons if the correct answer was chosen
+              if (action === 'report') {
+                btn.disabled = true;
+                // Reduce opacity only for non-selected buttons
+                if (!btn.onclick || !btn.onclick.toString().includes(`'report'`)) {
+                  btn.style.opacity = '0.6';
+                }
+              }
+            });
+            
+            // Find and STRONGLY highlight the selected button
+            buttons.forEach(btn => {
+              if (btn.onclick && btn.onclick.toString().includes(`'${action}'`)) {
+                const isCorrect = action === 'report';
+                const isPartial = action === 'hangup' || action === 'question';
+                const color = isCorrect ? '#4CAF50' : (isPartial ? '#ff9800' : '#f44336');
+                const darkColor = isCorrect ? '#2E7D32' : (isPartial ? '#E65100' : '#C62828');
+                const icon = isCorrect ? '✅' : (isPartial ? '⚠️' : '❌');
+                
+                btn.style.background = `linear-gradient(135deg, ${color}, ${darkColor})`;
+                btn.style.color = 'white';
+                btn.style.fontWeight = 'bold';
+                btn.style.border = `4px solid ${darkColor}`;
+                btn.style.transform = 'scale(1.12)';
+                btn.style.boxShadow = `0 8px 30px ${color}66, 0 0 25px ${color}44`;
+                btn.style.opacity = '1';
+                btn.style.position = 'relative';
+                btn.style.zIndex = '100';
+                btn.style.filter = 'none';
+              btn.style.opacity = '1';  // Ensure selected button is fully visible
+                
+                // Only add icon if it doesn't already exist
+                if (!btn.querySelector('.call-indicator')) {
+                  const indicatorEl = document.createElement('span');
+                  indicatorEl.className = 'call-indicator';
+                  indicatorEl.style.cssText = `
+                    margin-right: 12px;
+                    font-size: 1.6em;
+                    vertical-align: middle;
+                    display: inline-block;
+                  `;
+                  indicatorEl.textContent = icon;
+                  btn.insertBefore(indicatorEl, btn.firstChild);
+                }
+                
+                // Only add label if it doesn't already exist
+                if (!btn.querySelector('.call-label')) {
+                  const label = document.createElement('div');
+                  label.className = 'call-label';
+                  label.style.cssText = `
+                    position: absolute;
+                    top: -30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: ${color};
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 15px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    white-space: nowrap;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 101;
+                  `;
+                  label.textContent = '🎯 YOUR CHOICE';
+                  btn.appendChild(label);
+                }
+              }
+            });
+          }
+        } else if (choicesData['initial_call_action'] === 'decline') {
+          const feedbackDiv = document.getElementById('callFeedback');
+          if (feedbackDiv) {
+            feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+              ✅ Good decision! When in doubt, decline and verify through official channels.
+            </div>`;
+          }
+          // Hide initial call buttons
+          const initialActions = document.getElementById('initialCallActions');
+          if (initialActions) initialActions.style.display = 'none';
+        }
+      }
+      
+      // Now restore scenario choices
+      Object.keys(choicesData).forEach(choiceKey => {
+        const choice = choicesData[choiceKey];
+        if (choiceKey.startsWith('scenario_')) {
+          const scenarioIndex = parseInt(choiceKey.split('_')[1]);
+          
+          // Find the scenario buttons
+          const buttons = document.querySelectorAll(`#scenario${scenarioIndex}Options button`);
+          
+          
+          if (buttons.length > choice && choice !== undefined) {
+            // Show the feedback
+            const scenarios = [
+              {
+                options: [
+                  { feedback: 'Never! This is a classic CEO fraud scam.', correct: false },
+                  { feedback: 'Don\'t engage! Verify through official channels.', correct: false },
+                  { feedback: 'Good approach, but reporting is better.', correct: false },
+                  { feedback: 'Perfect! Report suspicious emails immediately.', correct: true }
+                ]
+              },
+              {
+                options: [
+                  { feedback: 'Never click unexpected links!', correct: false },
+                  { feedback: 'Don\'t engage with suspicious texts.', correct: false },
+                  { feedback: 'Smart! Always use official platforms.', correct: true },
+                  { feedback: 'Good, but checking LinkedIn first is best.', correct: false }
+                ]
+              },
+              {
+                options: [
+                  { feedback: 'No! This is a vishing attempt.', correct: false },
+                  { feedback: 'Good, but reporting would be better.', correct: false },
+                  { feedback: 'Smart, but also report it!', correct: false },
+                  { feedback: 'Perfect! This helps protect everyone.', correct: true }
+                ]
+              }
+            ];
+            
+            const option = scenarios[scenarioIndex] && scenarios[scenarioIndex].options[choice];
+            const feedbackDiv = document.getElementById(`scenario${scenarioIndex}Feedback`);
+            
+            // Only proceed if we have the feedback div (scenarios are loaded)
+            if (!feedbackDiv) return; // Skip this scenario if not loaded yet
+            
+            // Check if this was marked as completed (correct answer)
+            const isCompleted = completedScenarios[choiceKey];
+            
+            if (option) {
+              // Clear all button styling first
+              buttons.forEach(btn => {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.fontWeight = '';
+                btn.style.border = '';
+                btn.style.opacity = '';
+              });
+              
+              // Highlight only the saved selected button
+              buttons[choice].style.background = option.correct ? 
+                'linear-gradient(135deg, #4CAF50, #45a049)' : 
+                'linear-gradient(135deg, #ff9800, #f57c00)';
+              buttons[choice].style.color = 'white';
+              buttons[choice].style.fontWeight = '600';
+              buttons[choice].style.border = option.correct ? '2px solid #4CAF50' : '2px solid #ff9800';
+              
+              if (option.correct) {
+                // This was a correct answer
+                feedbackDiv.innerHTML = `<div class="feedback correct" style="display:block;">
+                  ✅ ${option.feedback}
+                </div>`;
+                // Disable all buttons for correct answers
+                buttons.forEach(btn => {
+                  btn.disabled = true;
+                  btn.classList.add('disabled');
+                });
+                // Count this as completed since it's a correct answer
+                gameState.scenariosCompleted++;
+              } else {
+                // This was an incorrect answer - show feedback but allow retrying
+                feedbackDiv.innerHTML = `<div class="feedback incorrect" style="display:block;">
+                  ❌ ${option.feedback} Try again!
+                </div>`;
+                // Opacity is already set with the button styling above
+              }
+            }
+          }
+        }
+      });
+      
+      // Check if all scenarios are completed to show the complete button
+      if (gameState.scenariosCompleted === gameState.totalScenarios) {
+        const completeBtn = document.getElementById('completeBtn');
+        if (completeBtn) completeBtn.style.display = 'inline-flex';
+      }
+    }
+
+    // SCORM tracking
+    function updateSCORM() {
+      if (scorm.api) {
+        scorm.setValue('cmi.core.lesson_location', String(gameState.currentSlide));
+        scorm.setValue('cmi.suspend_data', JSON.stringify({
+          currentSlide: gameState.currentSlide,
+          achievements: gameState.achievements
+        }));
+        
+        const elapsed = formatTime(new Date() - gameState.startTime);
+        scorm.setValue('cmi.core.session_time', elapsed);
+        scorm.commit();
+      }
+    }
+    
+    function formatTime(ms) {
+      const s = Math.floor(ms / 1000);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return [h, m, sec].map(v => v < 10 ? '0' + v : v).join(':');
+    }
+    
+    // Handle window close
+    window.onbeforeunload = function() {
+      if (scorm.api) {
+        scorm.finish();
+      }
+    };
+    
+    // Add spin animation
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
